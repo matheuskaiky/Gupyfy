@@ -70,7 +70,7 @@ gupyfy/
 
 ### 🏁 Quick Start
 
-For a detailed guide, please refer to our **[Official Wiki](https://github.com/matheuskaiky/Gupyfy/wiki)**.
+For a detailed guide, please refer to our **[Official Wiki](https://github.com/matheuskaiky/Gupyfy/wiki#--boas-vindas-à-wiki-do-gupyfy)**.
 
 1.  **Clone the repository:**
     ```sh
