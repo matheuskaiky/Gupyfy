@@ -191,7 +191,7 @@ Para um guia detalhado, por favor, consulte a nossa **[Wiki Oficial](https://git
 
 ### 🤝 Como Contribuir
 
-Contribuições são bem-vindas! Por favor, verifique o **[Guia de Contribuição](https://github.com/matheuskaiky/Gupyfy/wiki/Como-Contribuir)** em nossa Wiki para mais detalhes sobre como começar.
+Contribuições são bem-vindas! Por favor, verifique o **[Guia de Contribuição](https://github.com/matheuskaiky/Gupyfy/wiki/How-to-Contribute#--como-contribuir)** em nossa Wiki para mais detalhes sobre como começar.
 
 <br>
 
