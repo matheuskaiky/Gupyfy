@@ -1,4 +1,4 @@
-br.com.matheuskaiky.gupyfy.domain;
+package br.com.matheuskaiky.gupyfy.domain;
 
 /**
  * Represents a job opening.
@@ -9,6 +9,7 @@ br.com.matheuskaiky.gupyfy.domain;
 public record Job(
     String id,
     String title,
+    String jobLevel,
     String companyName,
     String employmentType,
     String url
