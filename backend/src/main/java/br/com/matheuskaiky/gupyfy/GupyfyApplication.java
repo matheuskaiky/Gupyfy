@@ -1,13 +1,13 @@
-package br.com.matheuskaiky.gupify;
+package br.com.matheuskaiky.gupyfy;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class GupifyApplication {
+public class GupyfyApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(GupifyApplication.class, args);
+		SpringApplication.run(GupyfyApplication.class, args);
 	}
 
 }

@@ -9,10 +9,10 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>br.com.matheuskaiky</groupId>
-	<artifactId>gupify</artifactId>
+	<artifactId>gupyfy</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>gupify</name>
-	<description>An intelligent job hunter for the Gupy platform.</description>
+	<name>gupyfy</name>
+	<description>An intelligent job hunter for the Gupy platform</description>
 	<url/>
 	<licenses>
 		<license/>
