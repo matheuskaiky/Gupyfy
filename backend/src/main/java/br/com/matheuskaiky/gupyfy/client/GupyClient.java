@@ -52,7 +52,7 @@ public class GupyClient {
             }
 
             return apiResponse.data().stream()
-                    .map(dto -> new Job(dto.title(), dto.company().name(), dto.url()))
+                    .map(dto -> new Job(dto.id(), dto.title(), dto.jobLevel(), dto.company().name(), dto.workMode(), dto.url()))
                     .collect(Collectors.toList());
 
         } catch (IOException e) {
