@@ -7,6 +7,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public record GupyJobDto(
         @JsonProperty("id") Long id,
         @JsonProperty("name") String title,
+        @JsonProperty("jobLevel") String jobLevel,
         @JsonProperty("company") CompanyDto company,
+        @JsonProperty("workMode") String workMode,
         @JsonProperty("jobUrl") String url
 ) {}
