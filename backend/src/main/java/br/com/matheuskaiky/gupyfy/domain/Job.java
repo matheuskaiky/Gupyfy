@@ -1,10 +1,6 @@
 package br.com.matheuskaiky.gupyfy.domain;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 /**
  * Represents a Job entity that will be stored in the database.
@@ -20,6 +16,8 @@ public class Job {
 
     private String title;
     private String companyName;
+
+    @Column(unique = true, length = 512)
     private String url;
 
     public Job() {
