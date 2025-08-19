@@ -24,9 +24,9 @@ public class JobController {
     public List<Job> getAllJobs() {
         // This is our mock data. Later, this will come from the database.
         return List.of(
-                new Job("1", "Senior Java Developer", "Senior","Tech Solutions Inc.", "Hybrid","https://example.com/job/1"),
-                new Job("2", "React Front-end Engineer", "None","Creative Minds LLC", "Presential", "https://example.com/job/2"),
-                new Job("3", "Cloud DevOps Specialist", "None","InfraCloud Co.", "Hybrid","https://example.com/job/3")
+                new Job(1, "Senior Java Developer", "Senior","Tech Solutions Inc.", "Hybrid","https://example.com/job/1"),
+                new Job(2, "React Front-end Engineer", "None","Creative Minds LLC", "Presential", "https://example.com/job/2"),
+                new Job(3, "Cloud DevOps Specialist", "None","InfraCloud Co.", "Hybrid","https://example.com/job/3")
         );
     }
 }

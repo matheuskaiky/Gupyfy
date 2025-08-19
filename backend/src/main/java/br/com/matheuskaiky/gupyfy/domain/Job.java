@@ -15,7 +15,9 @@ public class Job {
     private Long id;
 
     private String title;
+    private String jobLevel;
     private String companyName;
+    private String workMode;
 
     @Column(unique = true, length = 512)
     private String url;
@@ -23,9 +25,12 @@ public class Job {
     public Job() {
     }
 
-    public Job(String title, String companyName, String url) {
+    public Job(long id, String title, String jobLevel,String companyName, String workMode, String url) {
+        this.id = id;
         this.title = title;
+        this.jobLevel = jobLevel;
         this.companyName = companyName;
+        this.workMode = workMode;
         this.url = url;
     }
 
@@ -44,6 +49,10 @@ public class Job {
     public void setTitle(String title) {
         this.title = title;
     }
+
+    public String getJobLevel() {return jobLevel;}
+
+    public void setJobLevel(String jobLevel) {this.jobLevel = jobLevel;}
 
     public String getCompanyName() {
         return companyName;
