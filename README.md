@@ -35,7 +35,7 @@
 
 | Area                     | Technologies                                                              |
 | ------------------------ | ------------------------------------------------------------------------- |
-| **☕ Back-end** | Java 17, Spring Boot, Spring Data JPA, Maven, OkHttp, Jackson, SQLite    |
+| **☕ Back-end** | Java 17, Spring Boot, Spring Data JPA, Maven, OkHttp, Jackson, PostgreSQL (hosted on Supabase)    |
 | **⚛️ Front-end** | React, Vite, Tailwind CSS, Axios                                          |
 | **🧠 Artificial Intelligence** | Google Gemini API (or OpenAI)                                     |
 | **🔗 Integration** | n8n (Workflow Automation)                                                 |
@@ -125,13 +125,13 @@ Contributions are welcome! Please check the **[Contribution Guide](https://githu
 
 ### 🚀 Stack de Tecnologias
 
-| Área                     | Tecnologias                                                              |
-| ------------------------ | ------------------------------------------------------------------------- |
-| **☕ Back-end** | Java 17, Spring Boot, Spring Data JPA, Maven, OkHttp, Jackson, SQLite    |
-| **⚛️ Front-end** | React, Vite, Tailwind CSS, Axios                                          |
-| **🧠 Inteligência Artificial** | Google Gemini API (ou OpenAI)                                     |
-| **🔗 Integração** | n8n (Automação de Workflow)                                               |
-| **🛠️ DevOps & Ferramentas**| Git, GitHub, Docker (para o n8n)                                          |
+| Área                     | Tecnologias                                                                                       |
+| ------------------------ |---------------------------------------------------------------------------------------------------|
+| **☕ Back-end** | Java 17, Spring Boot, Spring Data JPA, Maven, OkHttp, Jackson, PostgreSQL (hospedado no Supabase) |
+| **⚛️ Front-end** | React, Vite, Tailwind CSS, Axios                                                                  |
+| **🧠 Inteligência Artificial** | Google Gemini API (ou OpenAI)                                                                     |
+| **🔗 Integração** | n8n (Automação de Workflow)                                                                       |
+| **🛠️ DevOps & Ferramentas**| Git, GitHub, Docker (para o n8n)                                                                  |
 
 <br>
 
