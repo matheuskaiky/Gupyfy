@@ -18,46 +18,56 @@ import java.util.stream.Collectors;
 @Component
 public class GupyClient {
 
+    // Define a limit for the number of fetched jobs of each request
+    private static final int LIMIT = 100;
+    private static final String GUPY_API_URL = "https://employability-portal.gupy.io/api/v1/" +
+            "jobs?sortBy=publishedDate&limit=" + LIMIT;
+
     private static final Logger log = LoggerFactory.getLogger(GupyClient.class);
     private final OkHttpClient httpClient = new OkHttpClient();
     private final ObjectMapper objectMapper = new ObjectMapper();
 
-    private static final String GUPY_API_URL = "https://api.gupy.io/api/";
-
-    /**
-     * Fetches and parses job listings from the Gupy API.
-     * @return A list of Job domain objects.
-     */
     public List<Job> fetchJobs() {
-        log.info("Attempting to fetch jobs from Gupy API...");
+        return null;
+    }
 
-        Request request = new Request.Builder()
-                .url(GUPY_API_URL)
-                .header("User-Agent", "Gupyfy Job Hunter")
-                .build();
+    // This method fetches jobs from the Gupy from the given request URL, that will be
+    // used with the GUPY_API_URL constant.
+    public List<Job> fetchJobs(String request) {
+        String url = GUPY_API_URL + request;
+        int page = 0; // Page count starts at 0
+        boolean jobFetched = false;
+        while (true) {
+            String offset = "&offset=" + (page * LIMIT);
+            String urlRequest = url + offset;
 
-        try (Response response = httpClient.newCall(request).execute()) {
-            if (!response.isSuccessful()) {
-                log.error("Failed to fetch jobs from Gupy. Status code: {}", response.code());
-                throw new IOException("Unexpected code " + response);
-            }
+            Request httpRequest = new Request.Builder()
+                    .url(urlRequest)
+                    .build();
+            try (Response response = httpClient.newCall(httpRequest).execute()) {
+                if (jobFetched) {
+                    log.info("Search has ended");
+                }
+                else if (!response.isSuccessful()) {
+                    log.error("Failed to fetch jobs from Gupy API: {}", response.message());
+                    return Collections.emptyList();
+                }
+                jobFetched = true;
 
-            String jsonBody = response.body().string();
-            log.info("Successfully fetched jobs JSON from Gupy.");
-
-            GupyApiResponseDto apiResponse = objectMapper.readValue(jsonBody, GupyApiResponseDto.class);
-
-            if (apiResponse == null || apiResponse.data() == null) {
+                try {
+                    String responseBody = response.body().string();
+                } catch (IOException e) {
+                    System.out.println("Failed to fetch jobs from Gupy API: " + e.getMessage());
+                }
+                GupyApiResponseDto apiResponse = objectMapper.readValue(responseBody, GupyApiResponseDto.class);
+                return apiResponse.jobs().stream()
+                        .map(Job::fromDto)
+                        .collect(Collectors.toList());
+            } catch (IOException e) {
+                log.error("Error fetching jobs from Gupy API", e);
                 return Collections.emptyList();
             }
-
-            return apiResponse.data().stream()
-                    .map(dto -> new Job(dto.id(), dto.title(), dto.jobLevel(), dto.company().name(), dto.workMode(), dto.url()))
-                    .collect(Collectors.toList());
-
-        } catch (IOException e) {
-            log.error("An error occurred while trying to fetch or parse jobs from Gupy.", e);
-            return Collections.emptyList();
+            page++;
         }
     }
 }

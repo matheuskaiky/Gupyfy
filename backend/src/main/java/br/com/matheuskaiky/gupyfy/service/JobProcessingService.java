@@ -27,7 +27,7 @@ public class JobProcessingService {
     public void processNewJobs() {
         log.info("Starting job processing task...");
 
-        List<Job> fetchedJobs = gupyClient.fetchJobs();
+        List<Job> fetchedJobs = gupyClient.fetchJobs("");
         int newJobsSaved = 0;
 
         for (Job job : fetchedJobs) {
