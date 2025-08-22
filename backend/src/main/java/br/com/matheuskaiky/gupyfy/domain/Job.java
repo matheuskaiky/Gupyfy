@@ -16,11 +16,12 @@ public class Job {
     private Long id;
 
     private String title;
+    private String description;
     private String jobLevel;
 
     @ManyToOne
     private Company company;
-    private String workMode; // "vacancy_type_talent_pool" or "vacancy_type_effective"
+    private String workPlace;
 
     @Temporal(TemporalType.DATE)
     private Date publishedDate;
@@ -28,21 +29,25 @@ public class Job {
     @Temporal(TemporalType.DATE)
     private Date deadlineDate;
 
+    private String jobOfferType; // "vacancy_type_talent_pool" or "vacancy_type_effective"
+
     @Column(unique = true, length = 512)
     private String url;
 
     public Job() {
     }
 
-    public Job(long id, String title, String jobLevel,Company company, String workMode,
-               Date publishedDate, Date deadlineDate, String url) {
+    public Job(long id, String title, String description, String jobLevel, Company company,
+               String workPlace, Date publishedDate, Date deadlineDate, String jobOfferType, String url) {
         this.id = id;
         this.title = title;
+        this.description = description;
         this.jobLevel = jobLevel;
         this.company = company;
-        this.workMode = workMode;
+        this.workPlace = workPlace;
         this.publishedDate = publishedDate;
         this.deadlineDate = deadlineDate;
+        this.jobOfferType = jobOfferType;
         this.url = url;
     }
 
@@ -60,6 +65,9 @@ public class Job {
         this.title = title;
     }
 
+    public String getDescription() {return description;}
+    public void setDescription(String description) {this.description = description;}
+
     public String getJobLevel() {return jobLevel;}
     public void setJobLevel(String jobLevel) {this.jobLevel = jobLevel;}
 
@@ -70,8 +78,8 @@ public class Job {
         this.company = company;
     }
 
-    public String getWorkMode() {return workMode;}
-    public void setWorkMode(String workMode) {this.workMode = workMode;}
+    public String getWorkPlace() {return workPlace;}
+    public void setWorkPlace(String workPlace) {this.workPlace = workPlace;}
 
     public Date getPublishedDate() {return publishedDate;}
     public void setPublishedDate(Date publishedDate) {this.publishedDate = publishedDate;}
