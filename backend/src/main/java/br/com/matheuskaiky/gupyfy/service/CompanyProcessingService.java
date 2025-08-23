@@ -1,16 +1,15 @@
 package br.com.matheuskaiky.gupyfy.service;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.Objects;
+
 import org.springframework.stereotype.Service;
 
 import br.com.matheuskaiky.gupyfy.domain.Company;
 import br.com.matheuskaiky.gupyfy.repository.CompanyRepository;
+import jakarta.transaction.Transactional;
 
 @Service
 public class CompanyProcessingService {
-
-    private static final Logger log = LoggerFactory.getLogger(CompanyProcessingService.class);
 
     private final CompanyRepository companyRepository;
 
@@ -18,32 +17,34 @@ public class CompanyProcessingService {
         this.companyRepository = companyRepository;
     }
 
-    private void updateCompanyInfo (Company company, String companyName, String logoUrl) {
-        if (!company.getCompanyName().equals(companyName)) {
-            company.setCompanyName(companyName);
-        }
-        if (!company.getLogoUrl().equals(logoUrl)) {
-            company.setLogoUrl(logoUrl);
-        }
-    }
+    /**
+     * Finds a company by its Gupy ID. If it exists, it updates its data only if changed.
+     * If it does not exist, it creates a new one.
+     * This is the "get or create" approach, optimized to avoid unnecessary database writes.
+     *
+     * @param gupyId The company ID from the Gupy platform.
+     * @param companyName The current name of the company.
+     * @param logoUrl The current logo URL of the company (can be null).
+     * @return The persisted Company entity, whether it's new or updated.
+     */
+    @Transactional
+    public Company processCompany(long gupyId, String companyName, String logoUrl) {
+        return companyRepository.findByGupyId(gupyId)
+                .map(existingCompany -> {
+                    boolean needsUpdate = !Objects.equals(existingCompany.getCompanyName(), companyName) ||
+                                          !Objects.equals(existingCompany.getLogoUrl(), logoUrl);
 
-    private Company findCompany (long gupyId, String companyName, String logoUrl) {
-        Company company = companyRepository.findByGupyId(gupyId).orElse(null);
-        if (company != null) {
-            updateCompanyInfo(company, companyName, logoUrl);
-        }
-        return company;
-    }
-
-    private Company createCompany (long gupyId, String companyName, String logoUrl) {
-        return new Company(gupyId, companyName, logoUrl);
-    }
-
-    public Company processCompany (long gupyId, String companyName, String logoUrl) {
-        Company company = findCompany(gupyId, companyName, logoUrl);
-        if (company == null) {
-            company = createCompany(gupyId, companyName, logoUrl);
-        }
-        return company;
+                    if (needsUpdate) {
+                        existingCompany.setCompanyName(companyName);
+                        existingCompany.setLogoUrl(logoUrl);
+                        return companyRepository.save(existingCompany);
+                    }
+                    
+                    return existingCompany;
+                })
+                .orElseGet(() -> {
+                    Company newCompany = new Company(gupyId, companyName, logoUrl);
+                    return companyRepository.save(newCompany);
+                });
     }
 }

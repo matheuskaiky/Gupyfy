@@ -13,6 +13,7 @@ public record GupyJobDto(
 
         @JsonProperty("companyId")  Long companyId,
         @JsonProperty("careerPageName") String companyName,
+        @JsonProperty("careerPageUrl") String logoUrl,
 
         @JsonProperty("workPlaceType") String workPlace,
         @JsonProperty("publishedDate") Date publishedDate,
