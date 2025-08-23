@@ -1,10 +1,11 @@
 package br.com.matheuskaiky.gupyfy.service;
 
-import br.com.matheuskaiky.gupyfy.domain.Company;
-import br.com.matheuskaiky.gupyfy.repository.CompanyRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+
+import br.com.matheuskaiky.gupyfy.domain.Company;
+import br.com.matheuskaiky.gupyfy.repository.CompanyRepository;
 
 @Service
 public class CompanyProcessingService {
@@ -26,22 +27,22 @@ public class CompanyProcessingService {
         }
     }
 
-    private Company findCompany (long id, String companyName, String logoUrl) {
-        Company company = companyRepository.findById(id).orElse(null);
+    private Company findCompany (long gupyId, String companyName, String logoUrl) {
+        Company company = companyRepository.findByGupyId(gupyId).orElse(null);
         if (company != null) {
             updateCompanyInfo(company, companyName, logoUrl);
         }
         return company;
     }
 
-    private Company createCompany (long id, String companyName, String logoUrl) {
-        return new Company(id, companyName, logoUrl);
+    private Company createCompany (long gupyId, String companyName, String logoUrl) {
+        return new Company(gupyId, companyName, logoUrl);
     }
 
-    public Company processCompany (long id, String companyName, String logoUrl) {
-        Company company = findCompany(id, companyName, logoUrl);
+    public Company processCompany (long gupyId, String companyName, String logoUrl) {
+        Company company = findCompany(gupyId, companyName, logoUrl);
         if (company == null) {
-            company = createCompany(id, companyName, logoUrl);
+            company = createCompany(gupyId, companyName, logoUrl);
         }
         return company;
     }

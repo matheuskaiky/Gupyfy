@@ -1,8 +1,16 @@
 package br.com.matheuskaiky.gupyfy.domain;
 
-import jakarta.persistence.*;
-
 import java.util.Date;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+import jakarta.persistence.Temporal;
+import jakarta.persistence.TemporalType;
 
 /**
  * Represents a Job entity that will be stored in the database.
@@ -16,7 +24,9 @@ public class Job {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "gupy_id", nullable = false, unique = true)
     private Long gupyId;
+    
     private String title;
     private String description;
     private String jobLevel;

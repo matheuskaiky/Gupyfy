@@ -1,11 +1,14 @@
 package br.com.matheuskaiky.gupyfy.repository;
 
-import br.com.matheuskaiky.gupyfy.domain.Company;
+import java.util.Optional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.Optional;
+import br.com.matheuskaiky.gupyfy.domain.Company;
 
 public interface CompanyRepository extends JpaRepository<Company, Long> {
 
     Optional<Company> findByCompanyName(String companyName);
+
+    Optional<Company> findByGupyId(Long gupyId);
 }
