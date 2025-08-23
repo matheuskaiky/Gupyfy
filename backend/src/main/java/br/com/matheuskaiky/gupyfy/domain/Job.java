@@ -44,13 +44,13 @@ public class Job {
     private String jobOfferType; // "vacancy_type_talent_pool" or "vacancy_type_effective"
 
     @Column(unique = true, length = 512)
-    private String url;
+    private String jobUrl;
 
     public Job() {
     }
 
     public Job(long gupyId, String title, String description, String jobLevel, Company company,
-               String workPlace, Date publishedDate, Date deadlineDate, String jobOfferType, String url) {
+               String workPlace, Date publishedDate, Date deadlineDate, String jobOfferType, String jobUrl) {
         this.gupyId = gupyId;
         this.title = title;
         this.description = description;
@@ -60,7 +60,7 @@ public class Job {
         this.publishedDate = publishedDate;
         this.deadlineDate = deadlineDate;
         this.jobOfferType = jobOfferType;
-        this.url = url;
+        this.jobUrl = jobUrl;
     }
 
     public Long getId() {
@@ -83,10 +83,10 @@ public class Job {
     public String getJobLevel() {return jobLevel;}
     public void setJobLevel(String jobLevel) {this.jobLevel = jobLevel;}
 
-    public Company getCompanyName() {
+    public Company getCompany() {
         return company;
     }
-    public void setCompanyName(Company company) {
+    public void setCompany(Company company) {
         this.company = company;
     }
 
@@ -102,10 +102,10 @@ public class Job {
     public  String getJobOfferType() {return jobOfferType;}
     public void setJobOfferType(String jobOfferType) {this.jobOfferType = jobOfferType;}
 
-    public String getUrl() {
-        return url;
+    public String getJobUrl() {
+        return jobUrl;
     }
-    public void setUrl(String url) {
-        this.url = url;
+    public void setJobUrl(String url) {
+        this.jobUrl = url;
     }
 }

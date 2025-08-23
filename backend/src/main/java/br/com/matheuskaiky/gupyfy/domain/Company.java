@@ -7,9 +7,10 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
-/* Gupy API for Company searching
-   https://employability-portal.gupy.io/api/v1/jobs/companies?limit=1000&sortBy=company&sortOrder=asc&workplaceType=hybrid
-*/
+/*
+ * Gupy API for Company searching
+ * https://employability-portal.gupy.io/api/v1/jobs/companies?limit=1000&sortBy=company&sortOrder=asc&workplaceType=hybrid
+ */
 
 @Entity
 @Table(name = "companies")

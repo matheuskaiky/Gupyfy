@@ -18,7 +18,8 @@ import java.util.stream.Collectors;
 @Component
 public class GupyClient {
 
-    // Define a limit for the number of fetched jobs of each request
+    // Define a limit for the number of fetched jobs of each request.
+    // At the time of writing this code, the Gupy API has a maximum limit of 100 jobs per request without error.
     private static final int LIMIT = 100;
     private static final String GUPY_API_URL = "https://employability-portal.gupy.io/api/v1/" +
             "jobs?sortBy=publishedDate&limit=" + LIMIT;
@@ -26,10 +27,6 @@ public class GupyClient {
     private static final Logger log = LoggerFactory.getLogger(GupyClient.class);
     private final OkHttpClient httpClient = new OkHttpClient();
     private final ObjectMapper objectMapper = new ObjectMapper();
-
-    public List<Job> fetchJobs() {
-        return null;
-    }
 
     // This method fetches jobs from the Gupy from the given request URL, that will be
     // used with the GUPY_API_URL constant.
