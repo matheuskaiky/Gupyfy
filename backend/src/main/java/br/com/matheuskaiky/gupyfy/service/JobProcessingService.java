@@ -4,6 +4,7 @@ import br.com.matheuskaiky.gupyfy.client.GupyClient;
 import br.com.matheuskaiky.gupyfy.client.dto.GupyJobDto;
 import br.com.matheuskaiky.gupyfy.domain.Company;
 import br.com.matheuskaiky.gupyfy.domain.Job;
+import br.com.matheuskaiky.gupyfy.mapper.JobMapper;
 import br.com.matheuskaiky.gupyfy.repository.JobRepository;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
@@ -21,29 +22,14 @@ public class JobProcessingService {
     private final GupyClient gupyClient;
     private final JobRepository jobRepository;
     private final CompanyProcessingService companyProcessingService;
+    private final JobMapper jobMapper;
 
-    public JobProcessingService(GupyClient gupyClient, JobRepository jobRepository,
+    public JobProcessingService(GupyClient gupyClient, JobRepository jobRepository, JobMapper jobMapper,
                                 CompanyProcessingService companyProcessingService) {
         this.gupyClient = gupyClient;
         this.jobRepository = jobRepository;
         this.companyProcessingService = companyProcessingService;
-    }
-
-    @NotNull
-    private static Job getJob(GupyJobDto dto, Company companyEntity) {
-        Job job = new Job();
-        job.setGupyId(dto.gupyId());
-        job.setTitle(dto.title());
-        job.setDescription(dto.description());
-        job.setJobLevel(null);
-        job.setWorkPlace(dto.workPlace());
-        job.setPublishedDate(dto.publishedDate());
-        job.setDeadlineDate(dto.deadlineDate());
-        job.setJobOfferType(dto.jobOfferType());
-        job.setJobUrl(dto.jobUrl());
-
-        job.setCompany(companyEntity);
-        return job;
+        this.jobMapper = jobMapper;
     }
 
     @Scheduled(fixedRateString = "PT1H")
@@ -51,6 +37,15 @@ public class JobProcessingService {
         processNewJobs("");
     }
 
+    /**
+     * A scheduled task that runs periodically to fetch, process, and save new jobs.
+     * This method orchestrates the entire workflow:
+     * 1. Fetches raw job data from the Gupy API.
+     * 2. Checks for duplicates to avoid reprocessing existing jobs.
+     * 3. Processes company information, creating or updating as needed.
+     * 4. Maps the job data to a database entity.
+     * 5. Saves the new job to the database.
+     */
     public void processNewJobs(String request) {
         log.info("Starting job processing task...");
 
@@ -72,7 +67,7 @@ public class JobProcessingService {
                         dto.logoUrl()
                 );
 
-                Job job = getJob(dto, companyEntity);
+                Job job = jobMapper.toEntity(dto, companyEntity);
 
                 jobRepository.save(job);
                 newJobsSaved++;

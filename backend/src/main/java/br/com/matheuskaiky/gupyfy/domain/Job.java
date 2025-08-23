@@ -13,8 +13,9 @@ import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
 
 /**
- * Represents a Job entity that will be stored in the database.
- * Each instance of this class corresponds to a row in the 'jobs' table.
+ * Represents a job entity as stored in the application's database.
+ * Each instance of this class corresponds to a single row in the 'jobs' table
+ * and contains data aggregated from the Gupy platform.
  */
 @Entity
 @Table(name = "jobs")

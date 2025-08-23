@@ -8,11 +8,25 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 /**
- * This class is the REST Controller responsible for handling all HTTP requests related to jobs.
+ * REST controller for managing job-related HTTP requests.
+ * This class exposes endpoints for clients (like the frontend application) to interact with job data.
  */
 @RestController // Informs Spring that this class will handle HTTP requests and return JSON.
 @RequestMapping("/api/jobs") // Defines that all methods in this class will be under the /api/jobs path.
 public class JobController {
+
+    /**
+     * Handles GET requests to /api/jobs.
+     * Fetches and returns a list of all jobs currently stored in the database.
+     *
+     * @return A {@link List} of {@link Job} objects.
+     */
+    /*
+    @GetMapping
+    public List<Job> getAllJobs() {
+        return jobRepository.findAll();
+    }
+     */
 
     /**
      * This method handles GET requests to /api/jobs.
