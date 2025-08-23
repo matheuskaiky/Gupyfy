@@ -4,7 +4,9 @@ import br.com.matheuskaiky.gupyfy.domain.Company;
 import br.com.matheuskaiky.gupyfy.repository.CompanyRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
 
+@Service
 public class CompanyProcessingService {
 
     private static final Logger log = LoggerFactory.getLogger(CompanyProcessingService.class);

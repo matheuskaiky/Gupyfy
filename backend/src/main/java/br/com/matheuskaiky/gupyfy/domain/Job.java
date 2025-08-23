@@ -13,8 +13,10 @@ import java.util.Date;
 public class Job {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private Long gupyId;
     private String title;
     private String description;
     private String jobLevel;
@@ -37,9 +39,9 @@ public class Job {
     public Job() {
     }
 
-    public Job(long id, String title, String description, String jobLevel, Company company,
+    public Job(long gupyId, String title, String description, String jobLevel, Company company,
                String workPlace, Date publishedDate, Date deadlineDate, String jobOfferType, String url) {
-        this.id = id;
+        this.gupyId = gupyId;
         this.title = title;
         this.description = description;
         this.jobLevel = jobLevel;
@@ -54,9 +56,9 @@ public class Job {
     public Long getId() {
         return id;
     }
-    public void setId(Long id) {
-        this.id = id;
-    }
+
+    public Long getGupyId() {return gupyId;}
+    public void setGupyId(long gupyId) {this.gupyId = gupyId;}
 
     public String getTitle() {
         return title;
@@ -86,6 +88,9 @@ public class Job {
 
     public Date getDeadlineDate() {return deadlineDate;}
     public void setDeadlineDate(Date deadlineDate) {this.deadlineDate = deadlineDate;}
+
+    public  String getJobOfferType() {return jobOfferType;}
+    public void setJobOfferType(String jobOfferType) {this.jobOfferType = jobOfferType;}
 
     public String getUrl() {
         return url;

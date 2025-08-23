@@ -7,7 +7,7 @@ import java.util.Date;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public record GupyJobDto(
-        @JsonProperty("id") Long id,
+        @JsonProperty("id") Long gupyId,
         @JsonProperty("name") String title,
         @JsonProperty("description") String description,
 
