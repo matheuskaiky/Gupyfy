@@ -13,4 +13,6 @@ public interface JobRepository extends JpaRepository<Job, Long> {
     Optional<Job> findByJobUrl(String jobUrl);
 
     Optional<Job> findByGupyId(long gupyId);
+
+    Optional<Job> findTopByOrderByPublishedDateDesc();
 }

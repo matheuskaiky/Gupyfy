@@ -12,6 +12,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class JobProcessingService {
@@ -53,7 +54,14 @@ public class JobProcessingService {
     public void processNewJobs(String request) {
         log.info("Starting job processing task...");
 
-        request = ""; // In the future, implement filters here, but for now, ignore the request parameter
+        Optional<Job> latestJobOptional = jobRepository.findTopByOrderByPublishedDateDesc();
+        if (latestJobOptional.isPresent()) {
+            log.info("Latest job in DB is '{}' (Gupy ID: {}). This will be used as the stop marker.",
+                    latestJobOptional.get().getTitle(), latestJobOptional.get().getGupyId());
+        } else {
+            log.info("No jobs found in the database. Starting a full scan.");
+        }
+
         List<GupyJobDto> fetchedJobDtos = gupyClient.fetchJobs(request);
         int newJobsSaved = 0;
 
@@ -63,6 +71,11 @@ public class JobProcessingService {
         }
 
         for (GupyJobDto dto : fetchedJobDtos) {
+            if (latestJobOptional.isPresent() && dto.gupyId().equals(latestJobOptional.get().getGupyId())) {
+                log.info("Stop marker reached. All newer jobs have been processed.");
+                break;
+            }
+
             if (jobRepository.findByJobUrl(dto.jobUrl()).isEmpty()) {
 
                 Company companyEntity = companyProcessingService.processCompany(
@@ -72,7 +85,6 @@ public class JobProcessingService {
                 );
 
                 Job job = jobMapper.toEntity(dto, companyEntity);
-
                 jobRepository.save(job);
                 newJobsSaved++;
                 log.info("New job saved: {}", job.getTitle());

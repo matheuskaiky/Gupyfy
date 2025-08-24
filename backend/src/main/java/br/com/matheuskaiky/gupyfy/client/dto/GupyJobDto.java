@@ -15,7 +15,7 @@ public record GupyJobDto(
         @JsonProperty("careerPageName") String companyName,
         @JsonProperty("careerPageUrl") String logoUrl,
 
-        @JsonProperty("workPlaceType") String workPlace,
+        @JsonProperty("workplaceType") String workPlace,
         @JsonProperty("publishedDate") Date publishedDate,
         @JsonProperty("applicationDeadline") Date deadlineDate,
         @JsonProperty("type") String jobOfferType,

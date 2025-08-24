@@ -1,7 +1,13 @@
+// In backend/src/main/java/br/com/matheuskaiky/gupyfy/controller/JobController.java
 package br.com.matheuskaiky.gupyfy.controller;
 
 import br.com.matheuskaiky.gupyfy.domain.Job;
+import br.com.matheuskaiky.gupyfy.repository.JobRepository; // Import repository
+import br.com.matheuskaiky.gupyfy.service.JobProcessingService; // Import service
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping; // Import PostMapping
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -9,11 +15,19 @@ import java.util.List;
 
 /**
  * REST controller for managing job-related HTTP requests.
- * This class exposes endpoints for clients (like the frontend application) to interact with job data.
  */
-@RestController // Informs Spring that this class will handle HTTP requests and return JSON.
-@RequestMapping("/api/jobs") // Defines that all methods in this class will be under the /api/jobs path.
+@RestController
+@RequestMapping("/api/jobs")
+@CrossOrigin(origins = "http://localhost:5173") // Allows your frontend to connect
 public class JobController {
+
+    private final JobRepository jobRepository;
+    private final JobProcessingService jobProcessingService;
+
+    public JobController(JobRepository jobRepository, JobProcessingService jobProcessingService) {
+        this.jobRepository = jobRepository;
+        this.jobProcessingService = jobProcessingService;
+    }
 
     /**
      * Handles GET requests to /api/jobs.
@@ -21,34 +35,36 @@ public class JobController {
      *
      * @return A {@link List} of {@link Job} objects.
      */
-    /*
     @GetMapping
     public List<Job> getAllJobs() {
-        return jobRepository.findAll();
+        return jobRepository.findAll(); // Now uses real data
     }
-     */
 
     /**
-     * This method handles GET requests to /api/jobs.
-     * For Phase 1, it returns a hardcoded list of mock jobs.
+     * Handles POST requests to /api/jobs/fetch.
+     * Manually triggers the process of fetching and saving new jobs from the Gupy API.
      *
-     * @return A list of Job objects.
+     * @return A response entity with a success message.
      */
-    @GetMapping
-    public List<Job> getAllJobs() {
-        // This is our mock data. Later, this will come from the database. Use the Job class as base to
-        // create mock data: long gupyId, String title, String description, String jobLevel, Company company,
-        //               String workPlace, Date publishedDate, Date deadlineDate, String jobOfferType, String url
-        return List.of(
-                new Job(1L, "Software Engineer", "Develop and maintain software applications.", "Mid-Level",
-                        null, "Remote", new java.util.Date(), null, "vacancy_type_effective",
-                        "https://example.com/job/1"),
-                new Job(2L, "Data Scientist", "Analyze and interpret complex data.", "Senior",
-                        null, "On-site", new java.util.Date(), null, "vacancy_type_talent_pool",
-                        "https://example.com/job/2"),
-                new Job(3L, "Product Manager", "Oversee product development from conception to launch.", "Lead",
-                        null, "Hybrid", new java.util.Date(), null, "vacancy_type_effective",
-                        "https://example.com/job/3")
-        );
+    @PostMapping("/fetch") // Use POST for actions that change state
+    public ResponseEntity<String> fetchNewJobs() {
+        // Run the processing in a new thread so the HTTP request can return immediately
+        new Thread(() -> jobProcessingService.processNewJobs("")).start();
+        return ResponseEntity.ok("Job fetching process started in the background.");
+    }
+
+    /**
+     * Handles POST requests to /api/jobs/refresh.
+     * Deletes all existing jobs and fetches fresh data from the Gupy API.
+     *
+     * @return A response entity with a success message.
+     */
+    @PostMapping("/refresh")
+    public ResponseEntity<String> refreshAllJobs() {
+        new Thread(() -> {
+            jobRepository.deleteAll();
+            jobProcessingService.processNewJobs();
+        }).start();
+        return ResponseEntity.ok("Job refresh process started in the background.");
     }
 }
