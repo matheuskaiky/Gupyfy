@@ -1,0 +1,96 @@
+package br.com.matheuskaiky.gupyfy.service;
+
+import br.com.matheuskaiky.gupyfy.client.GupyClient;
+import br.com.matheuskaiky.gupyfy.client.dto.GupyJobDto;
+import br.com.matheuskaiky.gupyfy.domain.Company;
+import br.com.matheuskaiky.gupyfy.domain.Job;
+import br.com.matheuskaiky.gupyfy.mapper.JobMapper;
+import br.com.matheuskaiky.gupyfy.repository.JobRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Optional;
+
+@Service
+public class JobProcessingService {
+
+    private static final Logger log = LoggerFactory.getLogger(JobProcessingService.class);
+
+    private final GupyClient gupyClient;
+    private final JobRepository jobRepository;
+    private final CompanyProcessingService companyProcessingService;
+    private final JobMapper jobMapper;
+
+    public JobProcessingService(GupyClient gupyClient, JobRepository jobRepository, JobMapper jobMapper,
+                                CompanyProcessingService companyProcessingService) {
+        this.gupyClient = gupyClient;
+        this.jobRepository = jobRepository;
+        this.companyProcessingService = companyProcessingService;
+        this.jobMapper = jobMapper;
+    }
+
+    @Scheduled(fixedRateString = "PT1H")
+    public void processNewJobs() {
+        try {
+            Thread.sleep(10);
+        }  catch (InterruptedException e) {
+            log.error("", e);
+        }
+        processNewJobs("");
+    }
+
+    /**
+     * A scheduled task that runs periodically to fetch, process, and save new jobs.
+     * This method orchestrates the entire workflow:
+     * 1. Fetches raw job data from the Gupy API.
+     * 2. Checks for duplicates to avoid reprocessing existing jobs.
+     * 3. Processes company information, creating or updating as needed.
+     * 4. Maps the job data to a database entity.
+     * 5. Saves the new job to the database.
+     */
+    public void processNewJobs(String request) {
+        log.info("Starting job processing task...");
+
+        Optional<Job> latestJobOptional = jobRepository.findTopByOrderByPublishedDateDesc();
+        if (latestJobOptional.isPresent()) {
+            log.info("Latest job in DB is '{}' (Gupy ID: {}). This will be used as the stop marker.",
+                    latestJobOptional.get().getTitle(), latestJobOptional.get().getGupyId());
+        } else {
+            log.info("No jobs found in the database. Starting a full scan.");
+        }
+
+        List<GupyJobDto> fetchedJobDtos = gupyClient.fetchJobs(request);
+        int newJobsSaved = 0;
+
+        if (fetchedJobDtos.isEmpty()) {
+            log.info("No jobs fetched from Gupy API.");
+            return;
+        }
+
+        for (GupyJobDto dto : fetchedJobDtos) {
+            if (latestJobOptional.isPresent() && dto.gupyId().equals(latestJobOptional.get().getGupyId())) {
+                log.info("Stop marker reached. All newer jobs have been processed.");
+                break;
+            }
+
+            if (jobRepository.findByJobUrl(dto.jobUrl()).isEmpty()) {
+
+                Company companyEntity = companyProcessingService.processCompany(
+                        dto.companyId(),
+                        dto.companyName(),
+                        dto.logoUrl()
+                );
+
+                Job job = jobMapper.toEntity(dto, companyEntity);
+                jobRepository.save(job);
+                newJobsSaved++;
+                log.info("New job saved: {}", job.getTitle());
+            }
+        }
+
+        log.info("Job processing task finished. Found and saved {} new jobs.", newJobsSaved);
+    }
+}
