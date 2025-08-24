@@ -33,6 +33,11 @@ public class JobProcessingService {
 
     @Scheduled(fixedRateString = "PT1H")
     public void processNewJobs() {
+        try {
+            Thread.sleep(10);
+        }  catch (InterruptedException e) {
+            log.error("", e);
+        }
         processNewJobs("");
     }
 
