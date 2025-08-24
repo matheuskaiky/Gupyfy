@@ -29,22 +29,25 @@ public class Job {
     private Long gupyId;
     
     private String title;
+
+    @Column(columnDefinition = "TEXT")
     private String description;
+
     private String jobLevel;
 
     @ManyToOne
     private Company company;
     private String workPlace;
 
-    @Temporal(TemporalType.DATE)
+    @Temporal(TemporalType.TIMESTAMP)
     private Date publishedDate;
 
-    @Temporal(TemporalType.DATE)
+    @Temporal(TemporalType.TIMESTAMP)
     private Date deadlineDate;
 
     private String jobOfferType; // "vacancy_type_talent_pool" or "vacancy_type_effective"
 
-    @Column(unique = true, length = 512)
+    @Column(length = 2048)
     private String jobUrl;
 
     public Job() {

@@ -10,7 +10,7 @@ import br.com.matheuskaiky.gupyfy.domain.Job;
 @Repository
 public interface JobRepository extends JpaRepository<Job, Long> {
 
-    Optional<Job> findByUrl(String url);
+    Optional<Job> findByJobUrl(String jobUrl);
 
     Optional<Job> findByGupyId(long gupyId);
 }

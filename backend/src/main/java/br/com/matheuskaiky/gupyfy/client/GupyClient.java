@@ -64,6 +64,14 @@ public class GupyClient {
                 allJobs.addAll(apiResponse.data());
                 page++;
 
+                // Being a good neighbour by delaying the request
+                try {
+                    Thread.sleep(500);
+                } catch (InterruptedException e) {
+                    log.warn("Thread sleep was interrupted.", e);
+                    Thread.currentThread().interrupt();
+                }
+
             } catch (IOException e) {
                 log.error("An IO error occurred while fetching jobs from Gupy API", e);
                 break;

@@ -6,7 +6,6 @@ import br.com.matheuskaiky.gupyfy.domain.Company;
 import br.com.matheuskaiky.gupyfy.domain.Job;
 import br.com.matheuskaiky.gupyfy.mapper.JobMapper;
 import br.com.matheuskaiky.gupyfy.repository.JobRepository;
-import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -59,7 +58,7 @@ public class JobProcessingService {
         }
 
         for (GupyJobDto dto : fetchedJobDtos) {
-            if (jobRepository.findByUrl(dto.jobUrl()).isEmpty()) {
+            if (jobRepository.findByJobUrl(dto.jobUrl()).isEmpty()) {
 
                 Company companyEntity = companyProcessingService.processCompany(
                         dto.companyId(),
