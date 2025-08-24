@@ -1,12 +1,18 @@
 package br.com.matheuskaiky.gupyfy.repository;
 
-import br.com.matheuskaiky.gupyfy.domain.Job;
+import java.util.Optional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import java.util.Optional;
+
+import br.com.matheuskaiky.gupyfy.domain.Job;
 
 @Repository
 public interface JobRepository extends JpaRepository<Job, Long> {
 
-    Optional<Job> findByUrl(String url);
+    Optional<Job> findByJobUrl(String jobUrl);
+
+    Optional<Job> findByGupyId(long gupyId);
+
+    Optional<Job> findTopByOrderByPublishedDateDesc();
 }

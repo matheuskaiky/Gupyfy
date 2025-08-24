@@ -1,10 +1,21 @@
 package br.com.matheuskaiky.gupyfy.domain;
 
-import jakarta.persistence.*;
+import java.util.Date;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+import jakarta.persistence.Temporal;
+import jakarta.persistence.TemporalType;
 
 /**
- * Represents a Job entity that will be stored in the database.
- * Each instance of this class corresponds to a row in the 'jobs' table.
+ * Represents a job entity as stored in the application's database.
+ * Each instance of this class corresponds to a single row in the 'jobs' table
+ * and contains data aggregated from the Gupy platform.
  */
 @Entity
 @Table(name = "jobs")
@@ -14,59 +25,91 @@ public class Job {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "gupy_id", nullable = false, unique = true)
+    private Long gupyId;
+    
     private String title;
-    private String jobLevel;
-    private String companyName;
-    private String workMode;
 
-    @Column(unique = true, length = 512)
-    private String url;
+    @Column(columnDefinition = "TEXT")
+    private String description;
+
+    private String jobLevel;
+
+    @ManyToOne
+    private Company company;
+    private String workPlace;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date publishedDate;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date deadlineDate;
+
+    private String jobOfferType; // "vacancy_type_talent_pool" or "vacancy_type_effective"
+
+    @Column(length = 2048)
+    private String jobUrl;
 
     public Job() {
     }
 
-    public Job(long id, String title, String jobLevel,String companyName, String workMode, String url) {
-        this.id = id;
+    public Job(long gupyId, String title, String description, String jobLevel, Company company,
+               String workPlace, Date publishedDate, Date deadlineDate, String jobOfferType, String jobUrl) {
+        this.gupyId = gupyId;
         this.title = title;
+        this.description = description;
         this.jobLevel = jobLevel;
-        this.companyName = companyName;
-        this.workMode = workMode;
-        this.url = url;
+        this.company = company;
+        this.workPlace = workPlace;
+        this.publishedDate = publishedDate;
+        this.deadlineDate = deadlineDate;
+        this.jobOfferType = jobOfferType;
+        this.jobUrl = jobUrl;
     }
 
     public Long getId() {
         return id;
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+    public Long getGupyId() {return gupyId;}
+    public void setGupyId(long gupyId) {this.gupyId = gupyId;}
 
     public String getTitle() {
         return title;
     }
-
     public void setTitle(String title) {
         this.title = title;
     }
 
-    public String getJobLevel() {return jobLevel;}
+    public String getDescription() {return description;}
+    public void setDescription(String description) {this.description = description;}
 
+    public String getJobLevel() {return jobLevel;}
     public void setJobLevel(String jobLevel) {this.jobLevel = jobLevel;}
 
-    public String getCompanyName() {
-        return companyName;
+    public Company getCompany() {
+        return company;
+    }
+    public void setCompany(Company company) {
+        this.company = company;
     }
 
-    public void setCompanyName(String companyName) {
-        this.companyName = companyName;
-    }
+    public String getWorkPlace() {return workPlace;}
+    public void setWorkPlace(String workPlace) {this.workPlace = workPlace;}
 
-    public String getUrl() {
-        return url;
-    }
+    public Date getPublishedDate() {return publishedDate;}
+    public void setPublishedDate(Date publishedDate) {this.publishedDate = publishedDate;}
 
-    public void setUrl(String url) {
-        this.url = url;
+    public Date getDeadlineDate() {return deadlineDate;}
+    public void setDeadlineDate(Date deadlineDate) {this.deadlineDate = deadlineDate;}
+
+    public  String getJobOfferType() {return jobOfferType;}
+    public void setJobOfferType(String jobOfferType) {this.jobOfferType = jobOfferType;}
+
+    public String getJobUrl() {
+        return jobUrl;
+    }
+    public void setJobUrl(String url) {
+        this.jobUrl = url;
     }
 }
