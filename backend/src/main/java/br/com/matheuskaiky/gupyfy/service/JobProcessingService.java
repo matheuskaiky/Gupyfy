@@ -93,4 +93,96 @@ public class JobProcessingService {
 
         log.info("Job processing task finished. Found and saved {} new jobs.", newJobsSaved);
     }
+
+    /**
+     * A scheduled task that classifies the seniority levels of all jobs in the database.
+     * This method iterates through each job, infers its seniority level based on its title,
+     * and updates the job record accordingly.
+     * It uses the JobClassifierService to perform the classification.
+     */
+    public void classifySeniorityLevels() {
+        log.info("Starting job seniority classification task...");
+        JobClassifierService jobClassifierService = new JobClassifierService();
+        List<Job> allJobs = jobRepository.findAll();
+
+        int totalJobs = allJobs.size();
+        int analysedJobs = 0;
+
+        int noTitleJobs = 0;
+        int updatedJobs = 0;
+        int notApplicableJobs = 0;
+
+        for (Job job : allJobs) {
+            String jobTitle = job.getTitle();
+            if (jobTitle == null || jobTitle.isBlank()) {
+                log.info("{}/{} ({}%) | Job ID {} has no title. Skipping seniority classification and setting null.",
+                        analysedJobs, totalJobs, (100.0 * analysedJobs/totalJobs), job.getId());
+                job.setJobLevel(null);
+                noTitleJobs++;
+                continue;
+            }
+            Optional<String> seniorityLevel = jobClassifierService.inferJobLevelFromTitle(jobTitle);
+            if (seniorityLevel.isPresent()) {
+                job.setJobLevel(seniorityLevel.get());
+                log.info("{}/{} ({}%) | Job {} classified as level '{}'", analysedJobs, totalJobs,
+                         (100.0 * analysedJobs/totalJobs),job.getTitle(), seniorityLevel.get());
+                updatedJobs++;
+            } else {
+                log.info("{}/{} ({}%) | Job {} could not be classified. Setting level to not applicable.",
+                         analysedJobs, totalJobs, (100.0 * analysedJobs/totalJobs), job.getTitle());
+                job.setJobLevel("not_applicable");
+                notApplicableJobs++;
+            }
+            jobRepository.save(job);
+            analysedJobs++;
+
+            try {
+                Thread.sleep(10);
+            } catch (InterruptedException e) {
+                log.error("Error during sleep between classifications", e);
+            }
+        }
+        log.info("Job seniority classification task finished.");
+
+        log.info("Seniority classification summary: {} jobs without title, {} jobs with seniority level, {} jobs not updated.",
+                noTitleJobs, updatedJobs, notApplicableJobs);
+    }
+
+    // This method update city and state of jobs with null city or state
+    public void updateJobLocations() {
+        log.info("Starting job location update task...");
+        List<Job> jobsToUpdate = jobRepository.findByCityIsNullOrStateIsNull();
+
+        int totalJobs = jobsToUpdate.size();
+        int updatedJobs = 0;
+
+        for (int i = 0; i < totalJobs; i++) {
+            Job job = jobsToUpdate.get(i);
+            String location = job.getLocation();
+            if (location != null && !location.isBlank()) {
+                String[] parts = location.split(" - ");
+                if (parts.length == 2) {
+                    job.setCity(parts[0].trim());
+                    job.setState(parts[1].trim());
+                    jobRepository.save(job);
+                    updatedJobs++;
+                    log.info("{}/{} ({}%) | Updated job ID {} with city '{}' and state '{}'",
+                            i + 1, totalJobs, (100.0 * (i + 1) / totalJobs), job.getId(), job.getCity(), job.getState());
+                } else {
+                    log.warn("{}/{} ({}%) | Job ID {} has an unexpected location format: '{}'. Skipping.",
+                            i + 1, totalJobs, (100.0 * (i + 1) / totalJobs), job.getId(), location);
+                }
+            } else {
+                log.warn("{}/{} ({}%) | Job ID {} has no location information. Skipping.",
+                        i + 1, totalJobs, (100.0 * (i + 1) / totalJobs), job.getId());
+            }
+
+            try {
+                Thread.sleep(10);
+            } catch (InterruptedException e) {
+                log.error("Error during sleep between location updates", e);
+            }
+        }
+        log.info("Job location update task finished. Updated {} jobs.", updatedJobs);
+    }
 }

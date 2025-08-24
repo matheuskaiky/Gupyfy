@@ -19,5 +19,9 @@ public record GupyJobDto(
         @JsonProperty("publishedDate") Date publishedDate,
         @JsonProperty("applicationDeadline") Date deadlineDate,
         @JsonProperty("type") String jobOfferType,
+
+        @JsonProperty("city") String jobCity,
+        @JsonProperty("state") String jobState,
+
         @JsonProperty("jobUrl") String jobUrl
 ) {}

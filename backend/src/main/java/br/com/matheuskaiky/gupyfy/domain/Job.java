@@ -47,14 +47,17 @@ public class Job {
 
     private String jobOfferType; // "vacancy_type_talent_pool" or "vacancy_type_effective"
 
+    @ManyToOne
+    private City city;
+
     @Column(length = 2048)
     private String jobUrl;
 
     public Job() {
     }
 
-    public Job(long gupyId, String title, String description, String jobLevel, Company company,
-               String workPlace, Date publishedDate, Date deadlineDate, String jobOfferType, String jobUrl) {
+    public Job(long gupyId, String title, String description, String jobLevel, Company company, String workPlace,
+               Date publishedDate, Date deadlineDate, String jobOfferType, City city, String jobUrl) {
         this.gupyId = gupyId;
         this.title = title;
         this.description = description;
@@ -64,6 +67,7 @@ public class Job {
         this.publishedDate = publishedDate;
         this.deadlineDate = deadlineDate;
         this.jobOfferType = jobOfferType;
+        this.city = city;
         this.jobUrl = jobUrl;
     }
 
@@ -105,6 +109,9 @@ public class Job {
 
     public  String getJobOfferType() {return jobOfferType;}
     public void setJobOfferType(String jobOfferType) {this.jobOfferType = jobOfferType;}
+
+    public City getCity() {return city;}
+    public void setCity(City city) {this.city = city;}
 
     public String getJobUrl() {
         return jobUrl;
