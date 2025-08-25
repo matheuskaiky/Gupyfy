@@ -19,4 +19,7 @@ public class IbgeClient {
                 .writeTimeout(TIMEOUT, TimeUnit.SECONDS)
                 .build();
     }
+
+    // Get all states from IBGE API
+    public
 }

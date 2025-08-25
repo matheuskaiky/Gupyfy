@@ -77,14 +77,7 @@ public class JobProcessingService {
             }
 
             if (jobRepository.findByJobUrl(dto.jobUrl()).isEmpty()) {
-
-                Company companyEntity = companyProcessingService.processCompany(
-                        dto.companyId(),
-                        dto.companyName(),
-                        dto.logoUrl()
-                );
-
-                Job job = jobMapper.toEntity(dto, companyEntity);
+                Job job = jobMapper.toEntity(dto);
                 jobRepository.save(job);
                 newJobsSaved++;
                 log.info("New job saved: {}", job.getTitle());
@@ -151,7 +144,7 @@ public class JobProcessingService {
     // This method update city and state of jobs with null city or state
     public void updateJobLocations() {
         log.info("Starting job location update task...");
-        List<Job> jobsToUpdate = jobRepository.findByCityIsNullOrStateIsNull();
+        List<Job> jobsToUpdate = jobRepository.findByCityIsNull();
 
         int totalJobs = jobsToUpdate.size();
         int updatedJobs = 0;

@@ -4,19 +4,25 @@ package br.com.matheuskaiky.gupyfy.mapper;
 import br.com.matheuskaiky.gupyfy.client.dto.GupyJobDto;
 import br.com.matheuskaiky.gupyfy.domain.Company;
 import br.com.matheuskaiky.gupyfy.domain.Job;
+import br.com.matheuskaiky.gupyfy.service.CompanyProcessingService;
 import org.springframework.stereotype.Component;
 
 @Component // Register this class as a Spring Bean so we can inject it
 public class JobMapper {
 
+    private final CompanyProcessingService companyProcessingService;
+
+    public JobMapper(CompanyProcessingService companyProcessingService) {
+        this.companyProcessingService = companyProcessingService;
+    }
+
     /**
      * Converts a GupyJobDto and a Company entity into a Job entity.
      *
      * @param dto The Data Transfer Object received from the Gupy API.
-     * @param company The persisted Company entity associated with this job.
      * @return A new Job entity, ready to be saved.
      */
-    public Job toEntity(GupyJobDto dto, Company company) {
+    public Job toEntity(GupyJobDto dto) {
         if (dto == null) {
             return null;
         }
@@ -36,7 +42,13 @@ public class JobMapper {
         // This field will be assigned for an LLM or another service
         // to analyze the job description and determine the level.
 
-        job.setCompany(company);
+        job.setCompany(companyProcessingService.processCompany(
+                dto.companyId(),
+                dto.companyName(),
+                dto.logoUrl()
+        ));
+
+        job.setCity();
 
         return job;
     }
