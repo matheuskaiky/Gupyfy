@@ -53,11 +53,14 @@ public class Job {
     @Column(length = 2048)
     private String jobUrl;
 
+    @Column(name = "is_active")
+    private boolean isActive;
+
     public Job() {
     }
 
     public Job(long gupyId, String title, String description, String jobLevel, Company company, String workPlace,
-               Date publishedDate, Date deadlineDate, String jobOfferType, City city, String jobUrl) {
+               Date publishedDate, Date deadlineDate, String jobOfferType, City city, String jobUrl, boolean isActive) {
         this.gupyId = gupyId;
         this.title = title;
         this.description = description;
@@ -69,6 +72,7 @@ public class Job {
         this.jobOfferType = jobOfferType;
         this.city = city;
         this.jobUrl = jobUrl;
+        this.isActive = isActive;
     }
 
     public Long getId() {
@@ -119,4 +123,7 @@ public class Job {
     public void setJobUrl(String url) {
         this.jobUrl = url;
     }
+
+    public boolean isActive() {return isActive;}
+    public void setIsActive(boolean isActive) {this.isActive = isActive;}
 }

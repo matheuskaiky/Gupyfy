@@ -11,5 +11,5 @@ public interface StateRepository extends JpaRepository<State,Integer> {
 
     Optional<State> findByName(String name);
 
-    Optional<State> findByAbbreviation(String abbreviation);
+    Optional<State> findByAcronym(String acronym);
 }

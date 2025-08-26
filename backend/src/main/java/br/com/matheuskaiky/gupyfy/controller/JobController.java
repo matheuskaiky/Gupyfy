@@ -73,6 +73,19 @@ public class JobController {
     }
 
     /**
+     * Handles POST requests to /api/jobs/search-inactive.
+     * Initiates a process to identify and mark inactive jobs in the database.
+     * Use curl -X POST http://localhost:8080/api/jobs/search-inactive
+     *
+     * @return A response entity with a success message.
+     */
+    @PostMapping("/search-inactive")
+    public ResponseEntity<String> searchInactiveJobs() {
+        new Thread(jobProcessingService::searchInactiveJobs).start();
+        return ResponseEntity.ok("Inactive job search process started in the background.");
+    }
+
+    /**
      * Handles POST requests to /api/jobs/classify.
      * Initiates the classification of all jobs in the database to determine their seniority levels.
      * Use curl -X POST http://localhost:8080/api/jobs/classify
@@ -85,52 +98,18 @@ public class JobController {
         return ResponseEntity.ok("Job classification process started in the background.");
     }
 
+    /**
+     * Handles POST requests to /api/jobs/update-location.
+     * Initiates a process to update the city and state information for jobs with missing location data.
+     * Use curl -X POST http://localhost:8080/api/jobs/update-location
+     *
+     * @return A response entity with a success message.
+     */
     // This method update city and state of jobs with null city or state
+    // TODO: delete this method after update is done
     @PostMapping("/update-location")
     public ResponseEntity<String> updateJobLocations() {
         new Thread(jobProcessingService::updateJobLocations).start();
         return ResponseEntity.ok("Job location update process started in the background.");
-    }
-
-    // This method will add all brazillian states (not included cities) direct in JobController, because it is a one-time operation
-    // Just to add states to the database
-    // TODO: Erase after use.
-    @PostMapping("/add-brazilian-states")
-    public ResponseEntity<String> addBrazilianStates() {
-        String[][] estados = {
-            {"Acre", "AC"},
-            {"Alagoas", "AL"},
-            {"Amapá", "AP"},
-            {"Amazonas", "AM"},
-            {"Bahia", "BA"},
-            {"Ceará", "CE"},
-            {"Distrito Federal", "DF"},
-            {"Espírito Santo", "ES"},
-            {"Goiás", "GO"},
-            {"Maranhão", "MA"},
-            {"Mato Grosso", "MT"},
-            {"Mato Grosso do Sul", "MS"},
-            {"Minas Gerais", "MG"},
-            {"Pará", "PA"},
-            {"Paraíba", "PB"},
-            {"Paraná", "PR"},
-            {"Pernambuco", "PE"},
-            {"Piauí", "PI"},
-            {"Rio de Janeiro", "RJ"},
-            {"Rio Grande do Norte", "RN"},
-            {"Rio Grande do Sul", "RS"},
-            {"Rondônia", "RO"},
-            {"Roraima", "RR"},
-            {"Santa Catarina", "SC"},
-            {"São Paulo", "SP"},
-            {"Sergipe", "SE"},
-            {"Tocantins", "TO"}
-        };
-        new Thread(() -> {
-            for (String[] estado : estados) {
-                locationProcessingService.addState(estado[0], estado[1]);
-            }
-        }).start();
-        return ResponseEntity.ok("Brazilian states addition process started in the background.");
     }
 }

@@ -44,6 +44,42 @@ public class JobProcessingService {
     }
 
     /**
+     * A scheduled task that runs periodically to identify and mark inactive jobs.
+     * This method checks each job in the database against the Gupy API to see if it is still active.
+     * If a job is not found in the API results, it is marked as inactive in the database.
+     */
+    //@Scheduled(fixedRateString = "PT6H")
+    public void searchInactiveJobs() {
+        log.info("Starting inactive job search task...");
+
+        List<Job> allJobs = jobRepository.findAll();
+        int inactiveJobsCount = 0;
+
+        for (Job job : allJobs) {
+            String request = "jobName=" + job.getTitle();
+
+            List<GupyJobDto> searchedJobs = gupyClient.fetchJobs(request);
+
+            boolean jobFound = false;
+            for (GupyJobDto dto : searchedJobs) {
+                if (dto.jobUrl().equals(job.getJobUrl())) {
+                    jobFound = true;
+                    break;
+                }
+            }
+
+            if (!jobFound) {
+                job.setIsActive(false);
+                jobRepository.save(job);
+                log.info("Job '{}' marked as inactive because it was not found in the Gupy API.", job.getTitle());
+                inactiveJobsCount++;
+            }
+        }
+
+        log.info("Inactive job search task finished. Found and marked {} jobs as inactive.", inactiveJobsCount);
+    }
+
+    /**
      * A scheduled task that runs periodically to fetch, process, and save new jobs.
      * This method orchestrates the entire workflow:
      * 1. Fetches raw job data from the Gupy API.
@@ -154,25 +190,31 @@ public class JobProcessingService {
         int updatedJobs = 0;
 
         for (Job job : allNullCityJobs) {
+            if (job.getWorkPlace().equals("remote")) {
+                continue;
+            }
+
             if (job.getCity() != null) {
                 continue;
             }
 
-            String request = "jobName=" + job.getTitle().replace(" ", "+");
+            String request = "&jobName=" + job.getTitle();
 
             List<GupyJobDto> searchedJobs = gupyClient.fetchJobs(request);
 
             if (searchedJobs.isEmpty()) {
                 log.info("No matching job found in Gupy API for job '{}'. Skipping it in location update.", job.getTitle());
+                log.warn("Job '{}' will be marked as inactive because it was not found in the Gupy API.", job.getTitle());
+                job.setIsActive(false);
                 continue;
             }
 
             for (GupyJobDto dto : searchedJobs) {
                 if (dto.jobUrl().equals(job.getJobUrl())) {
-                    job.setCity(jobMapper.toEntity(dto).getCity());
+                    job.setCity(jobMapper.toEntity(dto).getCity()); 
                     updatedJobs++;
                     log.info("{}/{} ({}%) | Job '{}' location updated to {}",
-                            updatedJobs, totalJobs, (100.0 * updatedJobs / totalJobs), job.getTitle(),
+                            updatedJobs, totalJobs, String.format("%.2f", (100.0 * updatedJobs / totalJobs)), job.getTitle(),
                             job.getCity() != null ? job.getCity().getName() + " - " + job.getCity().getState().getAcronym() : "null");
                     jobRepository.save(job);
                     break;

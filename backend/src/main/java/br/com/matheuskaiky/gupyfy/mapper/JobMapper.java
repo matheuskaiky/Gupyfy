@@ -37,6 +37,7 @@ public class JobMapper {
         job.setPublishedDate(dto.publishedDate());
         job.setDeadlineDate(dto.deadlineDate());
         job.setJobOfferType(dto.jobOfferType());
+        job.setIsActive(true);
 
         // job.setJobLevel(...);
         // TODO: Map this field when available in the DTO
@@ -48,6 +49,13 @@ public class JobMapper {
                 dto.companyName(),
                 dto.logoUrl()
         ));
+
+        if (dto.workPlace() != null) {
+            if (dto.workPlace().equals("remote")) {
+                job.setCity(null);
+                return job;
+            }
+        }
 
         job.setCity(locationProcessingService.processCity(
                 dto.jobCity(),

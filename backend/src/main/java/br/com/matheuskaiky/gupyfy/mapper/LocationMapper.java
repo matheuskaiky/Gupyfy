@@ -4,11 +4,11 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class LocationMapper {
-    public String toFullStateName(String stateAbbreviation) {
-        if (stateAbbreviation == null) {
+    public String toFullStateName(String stateAcronym) {
+        if (stateAcronym == null) {
             return null;
         }
-        return switch (stateAbbreviation.toUpperCase()) {
+        return switch (stateAcronym.toUpperCase()) {
             case "AC" -> "Acre";
             case "AL" -> "Alagoas";
             case "AP" -> "Amapá";
@@ -36,7 +36,7 @@ public class LocationMapper {
             case "SP" -> "São Paulo";
             case "SE" -> "Sergipe";
             case "TO" -> "Tocantins";
-            default -> stateAbbreviation;
+            default -> stateAcronym;
         };
     }
 
