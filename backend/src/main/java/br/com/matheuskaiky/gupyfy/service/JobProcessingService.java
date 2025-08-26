@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -36,7 +37,7 @@ public class JobProcessingService {
     public void processNewJobs() {
         try {
             Thread.sleep(10);
-        }  catch (InterruptedException e) {
+        } catch (InterruptedException e) {
             log.error("", e);
         }
         processNewJobs("");
@@ -109,7 +110,7 @@ public class JobProcessingService {
             String jobTitle = job.getTitle();
             if (jobTitle == null || jobTitle.isBlank()) {
                 log.info("{}/{} ({}%) | Job ID {} has no title. Skipping seniority classification and setting null.",
-                        analysedJobs, totalJobs, (100.0 * analysedJobs/totalJobs), job.getId());
+                        analysedJobs, totalJobs, (100.0 * analysedJobs / totalJobs), job.getId());
                 job.setJobLevel(null);
                 noTitleJobs++;
                 continue;
@@ -118,11 +119,11 @@ public class JobProcessingService {
             if (seniorityLevel.isPresent()) {
                 job.setJobLevel(seniorityLevel.get());
                 log.info("{}/{} ({}%) | Job {} classified as level '{}'", analysedJobs, totalJobs,
-                         (100.0 * analysedJobs/totalJobs),job.getTitle(), seniorityLevel.get());
+                        (100.0 * analysedJobs / totalJobs), job.getTitle(), seniorityLevel.get());
                 updatedJobs++;
             } else {
                 log.info("{}/{} ({}%) | Job {} could not be classified. Setting level to not applicable.",
-                         analysedJobs, totalJobs, (100.0 * analysedJobs/totalJobs), job.getTitle());
+                        analysedJobs, totalJobs, (100.0 * analysedJobs / totalJobs), job.getTitle());
                 job.setJobLevel("not_applicable");
                 notApplicableJobs++;
             }
@@ -142,40 +143,47 @@ public class JobProcessingService {
     }
 
     // This method update city and state of jobs with null city or state
+    // Its temporary, because the Jobs that are actually in the DB don't have city and state
+    // and it needs to be updated and fixed.
+    // TODO: Erase after use.
     public void updateJobLocations() {
         log.info("Starting job location update task...");
-        List<Job> jobsToUpdate = jobRepository.findByCityIsNull();
+        List<Job> allNullCityJobs = jobRepository.findByCityIsNull();
 
-        int totalJobs = jobsToUpdate.size();
+        int totalJobs = allNullCityJobs.size();
         int updatedJobs = 0;
 
-        for (int i = 0; i < totalJobs; i++) {
-            Job job = jobsToUpdate.get(i);
-            String location = job.getLocation();
-            if (location != null && !location.isBlank()) {
-                String[] parts = location.split(" - ");
-                if (parts.length == 2) {
-                    job.setCity(parts[0].trim());
-                    job.setState(parts[1].trim());
-                    jobRepository.save(job);
-                    updatedJobs++;
-                    log.info("{}/{} ({}%) | Updated job ID {} with city '{}' and state '{}'",
-                            i + 1, totalJobs, (100.0 * (i + 1) / totalJobs), job.getId(), job.getCity(), job.getState());
-                } else {
-                    log.warn("{}/{} ({}%) | Job ID {} has an unexpected location format: '{}'. Skipping.",
-                            i + 1, totalJobs, (100.0 * (i + 1) / totalJobs), job.getId(), location);
-                }
-            } else {
-                log.warn("{}/{} ({}%) | Job ID {} has no location information. Skipping.",
-                        i + 1, totalJobs, (100.0 * (i + 1) / totalJobs), job.getId());
+        for (Job job : allNullCityJobs) {
+            if (job.getCity() != null) {
+                continue;
             }
 
-            try {
-                Thread.sleep(10);
-            } catch (InterruptedException e) {
-                log.error("Error during sleep between location updates", e);
+            String request = "jobName=" + job.getTitle().replace(" ", "+");
+
+            List<GupyJobDto> searchedJobs = gupyClient.fetchJobs(request);
+
+            if (searchedJobs.isEmpty()) {
+                log.info("No matching job found in Gupy API for job '{}'. Skipping it in location update.", job.getTitle());
+                continue;
+            }
+
+            for (GupyJobDto dto : searchedJobs) {
+                if (dto.jobUrl().equals(job.getJobUrl())) {
+                    job.setCity(jobMapper.toEntity(dto).getCity());
+                    updatedJobs++;
+                    log.info("{}/{} ({}%) | Job '{}' location updated to {}",
+                            updatedJobs, totalJobs, (100.0 * updatedJobs / totalJobs), job.getTitle(),
+                            job.getCity() != null ? job.getCity().getName() + " - " + job.getCity().getState().getAcronym() : "null");
+                    jobRepository.save(job);
+                    break;
+                } else {
+                    if (jobRepository.findByJobUrl(dto.jobUrl()).isEmpty()) {
+                        jobRepository.save(jobMapper.toEntity(dto));
+                        log.info("While updating location, new job '{}' found and added to the database.",
+                                dto.title());
+                    }
+                }
             }
         }
-        log.info("Job location update task finished. Updated {} jobs.", updatedJobs);
     }
 }

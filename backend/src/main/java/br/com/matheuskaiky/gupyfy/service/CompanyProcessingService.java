@@ -2,6 +2,8 @@ package br.com.matheuskaiky.gupyfy.service;
 
 import java.util.Objects;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import br.com.matheuskaiky.gupyfy.domain.Company;
@@ -12,6 +14,7 @@ import jakarta.transaction.Transactional;
 public class CompanyProcessingService {
 
     private final CompanyRepository companyRepository;
+    private static final Logger log = LoggerFactory.getLogger(CompanyProcessingService.class);
 
     public CompanyProcessingService(CompanyRepository companyRepository) {
         this.companyRepository = companyRepository;
@@ -37,6 +40,7 @@ public class CompanyProcessingService {
                     if (needsUpdate) {
                         existingCompany.setCompanyName(companyName);
                         existingCompany.setLogoUrl(logoUrl);
+                        log.info("Updated company '{}' (Gupy ID: {}) with new data.", companyName, gupyId);
                         return companyRepository.save(existingCompany);
                     }
                     

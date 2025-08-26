@@ -4,6 +4,7 @@ import br.com.matheuskaiky.gupyfy.domain.Job;
 import br.com.matheuskaiky.gupyfy.repository.JobRepository;
 import br.com.matheuskaiky.gupyfy.service.JobClassifierService;
 import br.com.matheuskaiky.gupyfy.service.JobProcessingService;
+import br.com.matheuskaiky.gupyfy.service.LocationProcessingService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-import java.util.Optional;
 
 /**
  * REST controller for managing job-related HTTP requests.
@@ -25,11 +25,13 @@ public class JobController {
     private final JobRepository jobRepository;
     private final JobProcessingService jobProcessingService;
     private final JobClassifierService jobClassifierService;
+    private final LocationProcessingService locationProcessingService;
 
-    public JobController(JobRepository jobRepository, JobProcessingService jobProcessingService, JobClassifierService jobClassifierService) {
+    public JobController(JobRepository jobRepository, JobProcessingService jobProcessingService, JobClassifierService jobClassifierService, LocationProcessingService locationProcessingService) {
         this.jobRepository = jobRepository;
         this.jobProcessingService = jobProcessingService;
         this.jobClassifierService = jobClassifierService;
+        this.locationProcessingService = locationProcessingService;
     }
 
     /**
@@ -88,5 +90,47 @@ public class JobController {
     public ResponseEntity<String> updateJobLocations() {
         new Thread(jobProcessingService::updateJobLocations).start();
         return ResponseEntity.ok("Job location update process started in the background.");
+    }
+
+    // This method will add all brazillian states (not included cities) direct in JobController, because it is a one-time operation
+    // Just to add states to the database
+    // TODO: Erase after use.
+    @PostMapping("/add-brazilian-states")
+    public ResponseEntity<String> addBrazilianStates() {
+        String[][] estados = {
+            {"Acre", "AC"},
+            {"Alagoas", "AL"},
+            {"Amapá", "AP"},
+            {"Amazonas", "AM"},
+            {"Bahia", "BA"},
+            {"Ceará", "CE"},
+            {"Distrito Federal", "DF"},
+            {"Espírito Santo", "ES"},
+            {"Goiás", "GO"},
+            {"Maranhão", "MA"},
+            {"Mato Grosso", "MT"},
+            {"Mato Grosso do Sul", "MS"},
+            {"Minas Gerais", "MG"},
+            {"Pará", "PA"},
+            {"Paraíba", "PB"},
+            {"Paraná", "PR"},
+            {"Pernambuco", "PE"},
+            {"Piauí", "PI"},
+            {"Rio de Janeiro", "RJ"},
+            {"Rio Grande do Norte", "RN"},
+            {"Rio Grande do Sul", "RS"},
+            {"Rondônia", "RO"},
+            {"Roraima", "RR"},
+            {"Santa Catarina", "SC"},
+            {"São Paulo", "SP"},
+            {"Sergipe", "SE"},
+            {"Tocantins", "TO"}
+        };
+        new Thread(() -> {
+            for (String[] estado : estados) {
+                locationProcessingService.addState(estado[0], estado[1]);
+            }
+        }).start();
+        return ResponseEntity.ok("Brazilian states addition process started in the background.");
     }
 }

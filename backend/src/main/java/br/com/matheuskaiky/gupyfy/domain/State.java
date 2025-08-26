@@ -14,26 +14,21 @@ public class State {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    private int ibgeStateId;
-    private String stateName;
-    private String stateAcronym;
+    private String name;
+    private String acronym;
 
     public State() {}
 
-    public State(int ibgeStateId, String stateName, String stateAcronym) {
-        this.ibgeStateId = ibgeStateId;
-        this.stateName = stateName;
-        this.stateAcronym = stateAcronym;
+    public State(String name, String acronym) {
+        this.name = name;
+        this.acronym = acronym;
     }
 
     public int getId() { return id; }
 
-    public int getIbgeStateId() { return ibgeStateId; }
-    public void setIbgeStateId(int ibgeStateId) { this.ibgeStateId = ibgeStateId; }
+    public String getName() { return name; }
+    public void setName(String stateName) { this.name = stateName; }
 
-    public String getStateName() { return stateName; }
-    public void setStateName(String stateName) { this.stateName = stateName; }
-
-    public String getStateAcronym() { return stateAcronym; }
-    public void setStateAcronym(String stateAcronym) { this.stateAcronym = stateAcronym; }
+    public String getAcronym() { return acronym; }
+    public void setAcronym(String stateAcronym) { this.acronym = stateAcronym; }
 }

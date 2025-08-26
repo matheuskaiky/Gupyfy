@@ -1,19 +1,20 @@
-// Create a new file in a 'mapper' package: backend/src/main/java/br/com/matheuskaiky/gupyfy/mapper/JobMapper.java
 package br.com.matheuskaiky.gupyfy.mapper;
 
 import br.com.matheuskaiky.gupyfy.client.dto.GupyJobDto;
-import br.com.matheuskaiky.gupyfy.domain.Company;
 import br.com.matheuskaiky.gupyfy.domain.Job;
 import br.com.matheuskaiky.gupyfy.service.CompanyProcessingService;
+import br.com.matheuskaiky.gupyfy.service.LocationProcessingService;
 import org.springframework.stereotype.Component;
 
-@Component // Register this class as a Spring Bean so we can inject it
+@Component
 public class JobMapper {
 
     private final CompanyProcessingService companyProcessingService;
+    private final LocationProcessingService locationProcessingService;
 
-    public JobMapper(CompanyProcessingService companyProcessingService) {
+    public JobMapper(CompanyProcessingService companyProcessingService, LocationProcessingService locationProcessingService) {
         this.companyProcessingService = companyProcessingService;
+        this.locationProcessingService = locationProcessingService;
     }
 
     /**
@@ -48,7 +49,10 @@ public class JobMapper {
                 dto.logoUrl()
         ));
 
-        job.setCity();
+        job.setCity(locationProcessingService.processCity(
+                dto.jobCity(),
+                dto.jobState()
+        ));
 
         return job;
     }
