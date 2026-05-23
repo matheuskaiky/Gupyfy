@@ -19,8 +19,6 @@
 
 > **Project Status:** Currently paused to focus on [Termo Fácil](https://github.com/matheuskaiky/termo-facil), a government AI research project. The architecture is stable and well-documented — resuming development is straightforward. This is a portfolio project demonstrating modern software architecture, full-stack development, and AI integration.
 
-<br>
-
 ### ✨ Core Features
 
 * **🤖 AI-Powered Matching:** Generative AI calculates compatibility scores between your profile and job openings based on skills, experience, and expectations.
@@ -28,8 +26,6 @@
 * **🖥️ Modern UI:** Clean, responsive React interface for browsing, filtering, and managing opportunities.
 * **⚡ Automated Workflow:** Scheduled back-end service continuously monitors the Gupy platform for new relevant positions.
 * **🔔 Smart Notifications:** Integrates with n8n to send curated alerts via Telegram, Discord, or Email for high-match opportunities.
-
-<br>
 
 ### 🏗️ Architecture Highlights
 
@@ -49,8 +45,6 @@
 - Web scraping to extract Gupy job listings
 - API-first design for extensibility
 
-<br>
-
 ### 🚀 Tech Stack
 
 | Area                        | Technologies                                                                         |
@@ -60,8 +54,6 @@
 | **🧠 AI Integration**       | Google Gemini API (or OpenAI GPT)                                                     |
 | **🔗 Automation**           | n8n (Workflow Orchestration & Notifications)                                         |
 | **☁️ Cloud & DevOps**       | Supabase (PostgreSQL), Docker, GitHub Actions, Git                                   |
-
-<br>
 
 ### 📂 Project Structure
 
@@ -98,8 +90,6 @@ gupyfy/
 * **`/backend`**: Spring Boot application handling business logic, data processing, AI integration, and job scheduling.
 * **`/frontend`**: React SPA for user interactions, job discovery, and profile management.
 
-<br>
-
 ### 🏁 Quick Start
 
 For detailed documentation, see the **[Wiki](https://github.com/matheuskaiky/Gupyfy/wiki)**.
@@ -130,8 +120,6 @@ For detailed documentation, see the **[Wiki](https://github.com/matheuskaiky/Gup
    ```
    The UI will be available at `http://localhost:5173`
 
-<br>
-
 ### 🔐 Environment Variables
 
 **Backend** (`application.properties`):
@@ -150,8 +138,6 @@ VITE_API_BASE_URL=http://localhost:8080
 VITE_APP_NAME=Gupyfy
 ```
 
-<br>
-
 ### 🛠️ Development
 
 **Build backend:**
@@ -169,31 +155,11 @@ cd frontend && npm run build
 cd backend && mvn test
 cd ../frontend && npm test
 ```
-
-<br>
-
-### 🤝 Contributing
-
-Contributions are welcome! Please refer to the **[Contribution Guide](https://github.com/matheuskaiky/Gupyfy/blob/main/CONTRIBUTING.md)** for guidelines on:
-- Reporting issues
-- Submitting pull requests
-- Code style standards
-
-<br>
-
-### 📜 License
-
-This project is licensed under the **MIT License** — see the [LICENSE](LICENSE) file for details.
-
-<br>
-
 ---
 
 #### 🇧🇷 O **Gupyfy** é uma aplicação full-stack que utiliza Inteligência Artificial para encontrar, filtrar e classificar vagas de emprego da plataforma Gupy de acordo com seu perfil profissional. Automatize as partes tediosas da busca de emprego e foque nas oportunidades que realmente importam.
 
 > **Status do Projeto:** Atualmente pausado para focar no [Termo Fácil](https://github.com/matheuskaiky/termo-facil), um projeto de pesquisa em IA para o governo. A arquitetura está estável e bem documentada — retomar o desenvolvimento é direto. Este é um projeto de portfólio que demonstra arquitetura de software moderna, desenvolvimento full-stack e integração com IA.
-
-<br>
 
 ### ✨ Principais Funcionalidades
 
@@ -202,8 +168,6 @@ This project is licensed under the **MIT License** — see the [LICENSE](LICENSE
 * **🖥️ UI Moderna:** Interface React limpa e responsiva para navegar, filtrar e gerenciar oportunidades.
 * **⚡ Fluxo Automatizado:** Serviço de back-end agendado monitora continuamente a plataforma Gupy por novas posições relevantes.
 * **🔔 Notificações Inteligentes:** Integra com n8n para enviar alertas curados via Telegram, Discord ou Email para oportunidades de alta compatibilidade.
-
-<br>
 
 ### 🏗️ Destaques da Arquitetura
 
@@ -223,8 +187,6 @@ This project is licensed under the **MIT License** — see the [LICENSE](LICENSE
 - Web scraping para extrair vagas da plataforma Gupy
 - Design API-first para extensibilidade
 
-<br>
-
 ### 🚀 Stack de Tecnologias
 
 | Área                        | Tecnologias                                                                       |
@@ -234,8 +196,6 @@ This project is licensed under the **MIT License** — see the [LICENSE](LICENSE
 | **🧠 Integração com IA**    | Google Gemini API (ou OpenAI GPT)                                                   |
 | **🔗 Automação**            | n8n (Orquestração de Workflows & Notificações)                                     |
 | **☁️ Cloud & DevOps**       | Supabase (PostgreSQL), Docker, GitHub Actions, Git                                 |
-
-<br>
 
 ### 📂 Estrutura do Projeto
 
@@ -272,8 +232,6 @@ gupyfy/
 * **`/backend`**: Aplicação Spring Boot responsável pela lógica de negócio, processamento de dados, integração com IA e agendamento de jobs.
 * **`/frontend`**: SPA React para interações do usuário, descoberta de vagas e gerenciamento de perfil.
 
-<br>
-
 ### 🏁 Início Rápido
 
 Para documentação detalhada, veja a **[Wiki](https://github.com/matheuskaiky/Gupyfy/wiki)**.
@@ -304,8 +262,6 @@ Para documentação detalhada, veja a **[Wiki](https://github.com/matheuskaiky/G
    ```
    A UI estará disponível em `http://localhost:5173`
 
-<br>
-
 ### 🔐 Variáveis de Ambiente
 
 **Backend** (`application.properties`):
@@ -324,8 +280,6 @@ VITE_API_BASE_URL=http://localhost:8080
 VITE_APP_NAME=Gupyfy
 ```
 
-<br>
-
 ### 🛠️ Desenvolvimento
 
 **Build do backend:**
@@ -343,18 +297,3 @@ cd frontend && npm run build
 cd backend && mvn test
 cd ../frontend && npm test
 ```
-
-<br>
-
-### 🤝 Como Contribuir
-
-Contribuições são bem-vindas! Por favor, consulte o **[Guia de Contribuição](https://github.com/matheuskaiky/Gupyfy/blob/main/CONTRIBUTING.md)** para diretrizes sobre:
-- Reportar problemas
-- Submeter pull requests
-- Padrões de estilo de código
-
-<br>
-
-### 📜 Licença
-
-Este projeto é licenciado sob a **MIT License** — veja o arquivo [LICENSE](LICENSE) para detalhes.
